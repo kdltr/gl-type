@@ -9,13 +9,8 @@
 
 (import chicken scheme)
 (use freetype lolevel gl-utils miscmacros srfi-13 srfi-14 data-structures srfi-1
-     (prefix opengl-glew gl:) gl-utils)
+     (prefix opengl-glew gl:))
 
-(define (pixel-size x) (arithmetic-shift x -6))
-
-(define (next-power-of-two n)
-  (inexact->exact (expt 2 (ceiling (/ (log n)
-                                      (log 2))))))
 (define lib (ft-init-freetype))
 
 (define-record face
