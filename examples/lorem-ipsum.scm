@@ -1,3 +1,8 @@
+;; lorem-ipsum.scm
+
+;; Renders Lorem Ipsum. Run with csi or compile with csc.
+;; If /usr/share/fonts/truetype/msttcorefonts/arial.ttf is not on your system, substitue with a font that is.
+
 (import chicken scheme)
 (use gl-type glls-render (prefix glfw3 glfw:)
      (prefix opengl-glew gl:) gl-math gl-utils)
@@ -38,10 +43,9 @@ At tale ipsum ius. Harum putent theophrastus ad pro, semper debitis prodesset hi
 Semper commune id ius, purto augue posidonium ei cum. Id facer delectus iracundia vix, in consul corpora elaboraret sed. Ne sea torquatos definitiones. Sit ut quas omnesque, eos ea erant sonet voluptaria, labitur copiosae splendide cum ne.")
 
 ;;; Initialization and main loop
-(glfw:with-window (512 512 "Example" resizable: #f)
+(glfw:with-window (512 512 "Lorem Ipsum" resizable: #f)
   (gl:init)
   (gl:clear-color 1 1 1 1)
-  (gl:enable gl:+depth-test+)
   (gl:enable gl:+blend+)
   (gl:blend-func gl:+src-alpha+ gl:+one-minus-src-alpha+)
   (compile-pipelines)
@@ -56,10 +60,9 @@ Semper commune id ius, purto augue posidonium ei cum. Id facer delectus iracundi
                       mvp: mvp)))
       (let loop ()
         (glfw:swap-buffers (glfw:window))
-        (gl:clear (bitwise-ior gl:+color-buffer-bit+ gl:+depth-buffer-bit+))
+        (gl:clear gl:+color-buffer-bit+ )
         (render-text-shader renderable)
         (check-error)
         (glfw:poll-events)
         (unless (glfw:window-should-close (glfw:window))
           (loop))))))
-
