@@ -58,7 +58,7 @@
       (pen-x (+ (pen-x) width 1))
       return)))
 
-(define (load-face path size #!optional (char-set char-set:graphic) (mode normal:))
+(define (load-face path size #!key (char-set char-set:graphic) (mode normal:))
   (define face (ft-new-face lib path))
   (unless face
     (error 'load-face "TTF file not found" path))
