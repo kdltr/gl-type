@@ -23,6 +23,12 @@
 (define pen-x (make-parameter 0))
 (define pen-y (make-parameter 0))
 
+(define (pixel-size x) (arithmetic-shift x -6))
+
+(define (next-power-of-two n)
+  (inexact->exact (expt 2 (ceiling (/ (log n)
+                                      (log 2))))))
+
 ;; Easy bin packing: sort glyphs by decreasing height, each row of glyphs uses the height of the first glyph of that row
 (define (create-glyph char face mode texture-data tex-width tex-height )
   (ft-load-char face (char->integer char) FT_LOAD_DEFAULT)
