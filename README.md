@@ -17,7 +17,7 @@ It is part of the [Chicken egg index](http://wiki.call-cc.org/chicken-projects/e
 ## Documentation
     [procedure] (load-face PATH SIZE [char-set: CHAR-SET] [mode: MODE])
 
-Load the font face given by the [Freetype openable](http://freetype.org/) file pointed to by `PATH` with a size of `SIZE` pixels. `CHAR-SET` is the [SRFI 14](http://srfi.schemers.org/srfi-14/srfi-14.html) character set that should be loaded. Any non-graphical characters in the set will waste space, however. `MODE` is the mode in which the font should be rendered and should be one of `#:normal` – for normally hinted, anti-aliased rendering – or `#:mono` – for monochrome (aliased) rendering. Returns a `face` record.
+Load the font face given by the [Freetype-openable file](http://freetype.org/) pointed to by `PATH` with a size of `SIZE` pixels. `CHAR-SET` is the [SRFI 14](http://srfi.schemers.org/srfi-14/srfi-14.html) character-set that should be loaded. Any non-graphical characters in the set will waste space. `MODE` is the mode in which the font should be rendered and should be one of `#:normal` – for normally hinted, anti-aliased rendering – or `#:mono` – for monochrome (aliased) rendering. Returns a `face` record.
 
     [record] face
     [procedure] (face? FACE)
@@ -35,7 +35,7 @@ Strings are rendered with the upper-left corner of the text at the origin, with 
 
     [procedure] (string-width STRING FACE)
 
-Returns the width, in pixels, of the `STRING` if it were rendered with `FACE` any non-graphical characters other than `#\space` will be ignored.
+Returns the width, in pixels, of the `STRING` if it were rendered with `FACE`. Any non-graphical characters other than `#\space` will be ignored.
 
 ## Examples
 See the [examples directory](https://github.com/AlexCharlton/gl-type/tree/master/examples).
