@@ -19,18 +19,19 @@
 (define-record glyph
   offset-x offset-y width height advance bearing-x bearing-y)
 
-(define row-height (make-parameter #f))
-(define pen-x (make-parameter 0))
-(define pen-y (make-parameter 0))
-
 (define (pixel-size x) (arithmetic-shift x -6))
 
 (define (next-power-of-two n)
   (inexact->exact (expt 2 (ceiling (/ (log n)
                                       (log 2))))))
 
+;; Used for create-glyph bin-packing
+(define row-height (make-parameter #f))
+(define pen-x (make-parameter 0))
+(define pen-y (make-parameter 0))
+
 ;; Easy bin packing: sort glyphs by decreasing height, each row of glyphs uses the height of the first glyph of that row
-(define (create-glyph char face mode texture-data tex-width tex-height )
+(define (create-glyph char face mode texture-data tex-width tex-height)
   (ft-load-char face (char->integer char) FT_LOAD_DEFAULT)
   (ft-render-glyph (ft-face-glyph face) (if (eq? mode mono:)
                                             FT_RENDER_MODE_MONO
@@ -54,20 +55,20 @@
                                           tex-width))
                        (pointer-u8-ref
                         (pointer+ buf (+ j (* i width)))))))
-    (let ((return (cons char
-                        (make-glyph
-                         (/ (pen-x) tex-width) (/ (pen-y) tex-height)
-                         width rows
-                         (pixel-size (ft-glyph-metrics-hori-advance metrics))
-                         (pixel-size (ft-glyph-metrics-hori-bearing-x metrics))
-                         (pixel-size (ft-glyph-metrics-hori-bearing-y metrics))))))
-      (pen-x (+ (pen-x) width 1))
-      return)))
+    (begin0
+        (cons char
+              (make-glyph
+               (/ (pen-x) tex-width) (/ (pen-y) tex-height)
+               width rows
+               (pixel-size (ft-glyph-metrics-hori-advance metrics))
+               (pixel-size (ft-glyph-metrics-hori-bearing-x metrics))
+               (pixel-size (ft-glyph-metrics-hori-bearing-y metrics))))
+      (pen-x (+ (pen-x) width 1)))))
 
 (define (load-face path size #!key (char-set char-set:graphic) (mode normal:))
   (define face (ft-new-face lib path))
   (unless face
-    (error 'load-face "TTF file not found" path))
+    (error 'load-face "File not found or loadable" path))
   (ft-set-pixel-sizes face 0 size)
   (pen-x 0)
   (pen-y 0)
@@ -80,12 +81,14 @@
                                     (pixel-size (ft-glyph-metrics-width metrics))
                                     (pixel-size (ft-glyph-metrics-height metrics)))))
                           (char-set->list char-set)))
-         (height (third (car dimensions)))
+         (dimensions (sort dimensions (lambda (a b)
+                                        (> (third a) (third b)))))
+         (max-height (third (car dimensions)))
          (tex-width (next-power-of-two (sqrt (* (fold (lambda (a b)
                                                      (+ (second a) b))
                                                    0 dimensions)
-                                             height))))
-         (tex-height (let loop ((chars dimensions) (x 0) (y height))
+                                             max-height))))
+         (tex-height (let loop ((chars dimensions) (x 0) (y (+ 2 max-height)))
                        (if (null? chars)
                            y
                            (let ((char-width (second (car chars)))
@@ -101,10 +104,10 @@
                                            (ft-face-glyph face))))))
          (texture-data (make-u8vector (* tex-width tex-height)))
          (gl-tex (gen-texture))
-         (glyphs (map (cut create-glyph <> face mode texture-data
-                           tex-width tex-height)
-                      (map car (sort dimensions (lambda (a b)
-                                                  (> (third a) (third b)))))))
+         (glyphs (map (lambda (glyph)
+                        (create-glyph (car glyph) face mode texture-data
+                                      tex-width tex-height))
+                      dimensions))
          (ascender (fold (lambda (glyph x)
                            (max (glyph-bearing-y (cdr glyph))
                                 x))
@@ -124,8 +127,7 @@
 (define (string-mesh string face #!key (line-spacing 1) max-width (x 0) (y 0))
   (define w-scale (/ (face-atlas-width face)))
   (define h-scale (/ (face-atlas-height face)))
-  (let* ((n-characters (string-length (string-delete char-set:whitespace string)))
-         (glyphs (map (lambda (char)
+  (let* ((glyphs (map (lambda (char)
                             (if* (alist-ref char (face-glyphs face))
                                  it
                                  char))
@@ -179,6 +181,7 @@
                                               x2 y
                                               x y))))
                                 glyphs))
+         (n-characters (string-length (string-delete char-set:whitespace string)))
          (indices (append-map (lambda (x)
                                 (let ((x (* x 4)))
                                   (list x (+ 1 x) (+ 2 x)
@@ -194,7 +197,6 @@
 
 (define (word-wrap string face max-width)
   (define space-advance (face-space-advance face))
-  (define (prn x) (write x) (newline) x)
   (define (wrap-line string)
     (if (equal? string "")
         '("")
