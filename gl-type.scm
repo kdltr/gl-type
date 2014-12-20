@@ -113,7 +113,7 @@
                                 x))
                          0 glyphs)))
     (with-texture gl:+texture-2d+ gl-tex
-      (set-texture-properties 0
+      (set-texture-properties #f
                               mag: gl:+nearest+
                               min: gl:+nearest+
                               wrap: gl:+clamp-to-edge+)
