@@ -17,7 +17,7 @@ It is part of the [Chicken egg index](http://wiki.call-cc.org/chicken-projects/e
 ## Documentation
     [procedure] (load-face PATH SIZE [char-set: CHAR-SET] [mode: MODE])
 
-Load the font face given by the [Freetype-openable file](http://freetype.org/) pointed to by `PATH` with a size of `SIZE` pixels. `CHAR-SET` is the [SRFI 14](http://srfi.schemers.org/srfi-14/srfi-14.html) character-set that should be loaded. Any non-graphical characters in the set will waste space. `MODE` is the mode in which the font should be rendered and should be one of `#:normal` – for normally hinted, anti-aliased rendering – or `#:mono` – for monochrome (aliased) rendering. Returns a `face` record.
+Load the font face given by the [Freetype-openable file](http://freetype.org/) pointed to by `PATH` with a size of `SIZE` pixels. `CHAR-SET` is the [SRFI 14](http://srfi.schemers.org/srfi-14/srfi-14.html) character-set that should be loaded, defaulting to `char-set:graphic`. Any non-graphical characters in the set will waste space. `MODE` is the mode in which the font should be rendered and should be one of `#:normal` (the default) – for normally hinted, anti-aliased rendering – or `#:mono` – for monochrome (aliased) rendering. Returns a `face` record.
 
     [record] face
     [procedure] (face? FACE)

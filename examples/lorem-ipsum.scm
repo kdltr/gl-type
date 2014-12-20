@@ -1,7 +1,7 @@
 ;; lorem-ipsum.scm
 
 ;; Renders Lorem Ipsum. Run with csi or compile with csc.
-;; If /usr/share/fonts/truetype/msttcorefonts/arial.ttf is not on your system, substitue with a font that is.
+;; If /usr/share/fonts/truetype/msttcorefonts/arial.ttf is not on your system, substitute with a font that is.
 
 (import chicken scheme)
 (use gl-type glls-render (prefix glfw3 glfw:)
