@@ -41,6 +41,11 @@ Returns the width, in pixels, of the `STRING` if it were rendered with `FACE`. A
 See the [examples directory](https://github.com/AlexCharlton/gl-type/tree/master/examples).
 
 ## Version history
+### Version 0.2.0
+23 December 2014
+
+- `string-mesh` accepts keyword `mesh` argument
+
 ### Version 0.1.0
 * Initial release
 
