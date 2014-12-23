@@ -27,9 +27,9 @@ Load the font face given by the [Freetype-openable file](http://freetype.org/) p
 
 The record type returned by `load-face`.
 
-    [procedure] (string-mesh STRING FACE [line-spacing: SPACING] [max-width: MAX-WIDTH] [x: X] [y: Y])
+    [procedure] (string-mesh STRING FACE [line-spacing: SPACING] [max-width: MAX-WIDTH] [x: X] [y: Y] [mesh: MESH])
 
-Render the given `STRING` into a [gl-utils mesh](http://api.call-cc.org/doc/gl-utils/mesh) with the provided `FACE`. `SPACING` is multiplied by the standard line advancement – a smaller spacing results in less space between successive lines – defaults to `1.0`. If `MAX-WIDTH` is provided, the string will be word-wrapped such that it does not exceed the given width. `X` and `Y` may be given to provide an offset to the rendered string’s origin. 
+Render the given `STRING` into a [gl-utils mesh](http://api.call-cc.org/doc/gl-utils/mesh) with the provided `FACE`. `SPACING` is multiplied by the standard line advancement – a smaller spacing results in less space between successive lines – defaults to `1.0`. If `MAX-WIDTH` is provided, the string will be word-wrapped such that it does not exceed the given width. `X` and `Y` may be given to provide an offset to the rendered string’s origin. `MESH` may be supplied in order to reuse a mesh previously created with `string-mesh`. When `MESH` is supplied, the number of graphical characters (non-whitespace characters in the char-set of `FACE`) in `STRING` must be equal to or less than the number of graphical characters in the string used to create `MESH`.
 
 Strings are rendered with the upper-left corner of the text at the origin, with the dimensions of the mesh set in pixels. The mesh that is created has vertex attributes `position` – a 2 element `#:short` – and `tex-coord` – a 2 element normalized `#:ushort`, and `#:ushort` indices.
 
