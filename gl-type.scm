@@ -124,7 +124,7 @@
                                space-width tex-width tex-height)
                     (lambda (face) (delete-texture (face-atlas face))))))
 
-(define (string-mesh string face #!key (line-spacing 1) max-width (x 0) (y 0))
+(define (string-mesh string face #!key (line-spacing 1) max-width (x 0) (y 0) mesh)
   (define w-scale (/ (face-atlas-width face)))
   (define h-scale (/ (face-atlas-height face)))
   (let* ((glyphs (map (lambda (char)
@@ -186,14 +186,17 @@
                                 (let ((x (* x 4)))
                                   (list x (+ 1 x) (+ 2 x)
                                         x (+ 2 x) (+ 3 x))))
-                             (iota n-characters))))
-    (make-mesh vertices: `(attributes: ((position #:short 2)
-                                        (tex-coord #:unsigned-short 2
-                                                   normalized: #t))
-                           initial-elements: ((position . ,position)
-                                              (tex-coord . ,tex-coord)))
-               indices: `(type: #:ushort
-                          initial-elements: ,indices))))
+                             (iota n-characters)))
+         (vertices `((position . ,position)
+                     (tex-coord . ,tex-coord))))
+    (if mesh
+        (mesh-update! mesh vertices indices)
+        (make-mesh vertices: `(attributes: ((position #:short 2)
+                                            (tex-coord #:unsigned-short 2
+                                                       normalized: #t))
+                               initial-elements: ,vertices)
+                indices: `(type: #:ushort
+                           initial-elements: ,indices)))))
 
 (define (word-wrap string face max-width)
   (define space-advance (face-space-advance face))
