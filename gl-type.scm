@@ -8,8 +8,8 @@
    string-width)
 
 (import chicken scheme)
-(use freetype lolevel gl-utils miscmacros srfi-13 srfi-14 data-structures srfi-1
-     (prefix opengl-glew gl:))
+(use freetype (prefix opengl-glew gl:) gl-utils miscmacros 
+     lolevel data-structures srfi-1 srfi-4 srfi-13 srfi-14)
 
 (define lib (ft-init-freetype))
 
@@ -102,7 +102,7 @@
                              (pixel-size (ft-glyph-metrics-hori-advance
                                           (ft-glyph-slot-metrics
                                            (ft-face-glyph face))))))
-         (texture-data (make-u8vector (* tex-width tex-height)))
+         (texture-data (make-u8vector (* tex-width tex-height) #f #t))
          (gl-tex (gen-texture))
          (glyphs (map (lambda (glyph)
                         (create-glyph (car glyph) face mode texture-data
