@@ -7,6 +7,8 @@
 (use gl-type glls-render (prefix glfw3 glfw:)
      (prefix opengl-glew gl:) gl-math gl-utils)
 
+;;(pixel-density-ratio 2) ; Un-comment for high density displays
+
 ;;; Matrices
 (define projection-matrix
   (ortho 512 512 1 100))
@@ -38,9 +40,7 @@
 
 Cum ut quaestio temporibus. Cum meis harum nemore ea. Ad ius nusquam efficiendi. Eirmod aperiri legendos te sea. Et pro illud fabulas. Ut sed integre nominati, splendide omittantur est te, wisi imperdiet his ut. Vel appareat mandamus disputando in.
 
-At tale ipsum ius. Harum putent theophrastus ad pro, semper debitis prodesset his et. Nostrud iuvaret verterem no mei, te vis illud adolescens. Cu alterum partiendo vel, quo ei quis voluptatum, usu consul iisque denique id. Mei ut mucius ceteros conclusionemque.
-
-Semper commune id ius, purto augue posidonium ei cum. Id facer delectus iracundia vix, in consul corpora elaboraret sed. Ne sea torquatos definitiones. Sit ut quas omnesque, eos ea erant sonet voluptaria, labitur copiosae splendide cum ne.")
+At tale ipsum ius. Harum putent theophrastus ad pro, semper debitis prodesset his et. Nostrud iuvaret verterem no mei, te vis illud adolescens. Cu alterum partiendo vel, quo ei quis voluptatum, usu consul iisque denique id. Mei ut mucius ceteros conclusionemque.")
 
 ;;; Initialization and main loop
 (glfw:with-window (512 512 "Lorem Ipsum" resizable: #f)
@@ -51,7 +51,6 @@ Semper commune id ius, purto augue posidonium ei cum. Id facer delectus iracundi
   (compile-pipelines)
   (let* ((face (load-face "/usr/share/fonts/truetype/msttcorefonts/arial.ttf" 20))
          (test-string (string-mesh lorem-ipsum face
-                                   line-spacing: 0.5
                                    max-width: 460)))
     (mesh-make-vao! test-string (pipeline-mesh-attributes text-shader))
     (let ((renderable (make-text-shader-renderable

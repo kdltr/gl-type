@@ -5,7 +5,8 @@
    face-char-set
    face-height
    string-mesh
-   string-width)
+   string-width
+   pixel-density-ratio)
 
 (import chicken scheme)
 (use freetype (prefix opengl-glew gl:) gl-utils miscmacros 
@@ -18,6 +19,8 @@
 
 (define-record glyph
   offset-x offset-y width height advance bearing-x bearing-y)
+
+(define-parameter pixel-density-ratio 1)
 
 (define (pixel-size x) (arithmetic-shift x -6))
 
@@ -69,7 +72,7 @@
   (define face (ft-new-face lib path))
   (unless face
     (error 'load-face "File not found or loadable" path))
-  (ft-set-pixel-sizes face 0 size)
+  (ft-set-pixel-sizes face 0 (* size (pixel-density-ratio)))
   (pen-x 0)
   (pen-y 0)
   (row-height #f)
@@ -124,9 +127,10 @@
                                space-width tex-width tex-height)
                     (lambda (face) (delete-texture (face-atlas face))))))
 
-(define (string-mesh string face #!key (line-spacing 1) max-width (x 0) (y 0) mesh)
+(define (string-mesh string face #!key (line-spacing 1.3) max-width (x 0) (y 0) mesh)
   (define w-scale (/ (face-atlas-width face)))
   (define h-scale (/ (face-atlas-height face)))
+  (define pixel-scale (/ (pixel-density-ratio)))
   (let* ((glyphs (map (lambda (char)
                             (if* (alist-ref char (face-glyphs face))
                                  it
@@ -136,8 +140,8 @@
                                         string))))
          (pen-x x)
          (pen-y y)
-         (line-height (inexact->exact (round (* (face-height face) line-spacing))))
          (ascender (face-ascender face))
+         (line-height (* ascender line-spacing))
          (space-advance (face-space-advance face))
          (newline (lambda ()
                     (set! pen-x x)
@@ -160,10 +164,12 @@
                                             (x2 (+ x w))
                                             (y2 (- y h)))
                                        (begin0
-                                           (list x y2
-                                                 x2 y2
-                                                 x2 y
-                                                 x y)
+                                           (map (lambda (n)
+                                                  (* n pixel-scale))
+                                                (list x y2
+                                                      x2 y2
+                                                      x2 y
+                                                      x y))
                                          (set! pen-x (+ (glyph-advance glyph)
                                                         pen-x))))))
                                glyphs))
@@ -191,7 +197,7 @@
                      (tex-coord . ,tex-coord))))
     (if mesh
         (mesh-update! mesh vertices indices)
-        (make-mesh vertices: `(attributes: ((position #:short 2)
+        (make-mesh vertices: `(attributes: ((position #:float 2)
                                             (tex-coord #:unsigned-short 2
                                                        normalized: #t))
                                initial-elements: ,vertices)
@@ -200,6 +206,7 @@
 
 (define (word-wrap string face max-width)
   (define space-advance (face-space-advance face))
+  (define max-w (* max-width (pixel-density-ratio)))
   (define (wrap-line string)
     (if (equal? string "")
         '("")
@@ -208,9 +215,9 @@
               (list (string-join (reverse line) " "))
               (let ((width (string-width (car words) face)))
                 (cond
-                 ((and (zero? x) (>= width max-width))
+                 ((and (zero? x) (>= width max-w))
                   (cons (car words) (loop (cdr words) 0 '())))
-                 ((> (+ x width) max-width)
+                 ((> (+ x width) max-w)
                   (cons (string-join (reverse line) " ")
                         (loop words 0 '())))
                  (else
