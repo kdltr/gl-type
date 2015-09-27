@@ -206,7 +206,6 @@
 
 (define (word-wrap string face max-width)
   (define space-advance (face-space-advance face))
-  (define max-w (* max-width (pixel-density-ratio)))
   (define (wrap-line string)
     (if (equal? string "")
         '("")
@@ -215,9 +214,9 @@
               (list (string-join (reverse line) " "))
               (let ((width (string-width (car words) face)))
                 (cond
-                 ((and (zero? x) (>= width max-w))
+                 ((and (zero? x) (>= width max-width))
                   (cons (car words) (loop (cdr words) 0 '())))
-                 ((> (+ x width) max-w)
+                 ((> (+ x width) max-width)
                   (cons (string-join (reverse line) " ")
                         (loop words 0 '())))
                  (else
@@ -233,14 +232,15 @@
                             char))
                      (string->list string)))
         (space-advance (face-space-advance face)))
-    (fold (lambda (glyph w)
-            (+ (if (char? glyph)
-                   (cond
-                    ((char=? glyph #\space)
-                     space-advance)
-                    (else 0))
-                   (glyph-advance glyph))
-               w))
-          0 glyphs)))
+    (/ (fold (lambda (glyph w)
+               (+ (if (char? glyph)
+                      (cond
+                       ((char=? glyph #\space)
+                        space-advance)
+                       (else 0))
+                      (glyph-advance glyph))
+                  w))
+             0 glyphs)
+       (pixel-density-ratio))))
 
 ) ; end module gl-type
