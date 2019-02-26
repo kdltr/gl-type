@@ -3,9 +3,9 @@
 ;; Renders Lorem Ipsum. Run with csi or compile with csc.
 ;; If /usr/share/fonts/truetype/msttcorefonts/arial.ttf is not on your system, substitute with a font that is.
 
-(import chicken scheme)
-(use gl-type glls-render (prefix glfw3 glfw:)
-     (prefix opengl-glew gl:) gl-math gl-utils)
+(import scheme
+gl-type glls-render (prefix glfw3 glfw:)
+     (prefix epoxy gl:) gl-math gl-utils)
 
 ;;(pixel-density-ratio 2) ; Un-comment for high density displays
 
@@ -43,8 +43,10 @@ Cum ut quaestio temporibus. Cum meis harum nemore ea. Ad ius nusquam efficiendi.
 At tale ipsum ius. Harum putent theophrastus ad pro, semper debitis prodesset his et. Nostrud iuvaret verterem no mei, te vis illud adolescens. Cu alterum partiendo vel, quo ei quis voluptatum, usu consul iisque denique id. Mei ut mucius ceteros conclusionemque.")
 
 ;;; Initialization and main loop
-(glfw:with-window (512 512 "Lorem Ipsum" resizable: #f)
-  (gl:init)
+(glfw:with-window (512 512 "Lorem Ipsum" resizable: #f
+                   client-api: glfw:+opengl-api+
+                   context-version-major: 3
+                   context-version-minor: 3)
   (gl:clear-color 1 1 1 1)
   (gl:enable gl:+blend+)
   (gl:blend-func gl:+src-alpha+ gl:+one-minus-src-alpha+)

@@ -8,9 +8,22 @@
    string-width
    pixel-density-ratio)
 
-(import chicken scheme)
-(use freetype (prefix opengl-glew gl:) gl-utils miscmacros 
-     lolevel data-structures srfi-1 srfi-4 srfi-13 srfi-14)
+(import
+  scheme
+  (chicken base)
+  (chicken bitwise)
+  (chicken gc)
+  (chicken memory)
+  (chicken sort)
+  (chicken string)
+  srfi-1
+  srfi-4
+  srfi-13
+  srfi-14
+  miscmacros
+  freetype
+  (prefix epoxy #:gl)
+  gl-utils)
 
 (define lib (ft-init-freetype))
 
