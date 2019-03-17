@@ -1,7 +1,0 @@
-;; gl-type.meta -*- scheme -*-
-
-((synopsis "Freetype font rendering in OpenGL")
- (author "Alex Charlton")
- (category graphics)
- (license "BSD")
- (depends freetype miscmacros opengl-glew gl-utils))

@@ -3,9 +3,19 @@
 ;; Renders Lorem Ipsum. Run with csi or compile with csc.
 ;; If /usr/share/fonts/truetype/msttcorefonts/arial.ttf is not on your system, substitute with a font that is.
 
-(import scheme
-gl-type glls-render (prefix glfw3 glfw:)
-     (prefix epoxy gl:) gl-math gl-utils)
+;;;; NOTE:
+;;;; This uses glls-render, so if this file is compiled it must be linked with libepoxy
+;;;; E.g.:
+;;;; csc -L -lepoxy lorem-ipsum.scm
+
+(import
+  scheme
+  gl-type
+  glls-render
+  (prefix glfw3 glfw:)
+  (prefix epoxy gl:)
+  gl-math
+  gl-utils)
 
 ;;(pixel-density-ratio 2) ; Un-comment for high density displays
 

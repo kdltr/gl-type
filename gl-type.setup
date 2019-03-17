@@ -1,9 +1,0 @@
-;; gl-type.setup -*- scheme -*-
-
-(compile -d0 -O3 -J -s gl-type.scm)
-(compile -d0 -O3 -s gl-type.import.scm)
-
-(install-extension
- 'gl-type
- '("gl-type.so" "gl-type.import.so")
- '((version "0.3.0")))
